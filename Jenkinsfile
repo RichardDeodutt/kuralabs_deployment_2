@@ -5,7 +5,7 @@ pipeline {
         steps {
           sh '''#!/bin/bash
           source testenv/bin/activate
-          node --max-old-space-size=400 $(which npm) install --save-dev cypress@8.7.0
+          node --max-old-space-size=400 /usr/bin/npm install --save-dev cypress@8.7.0
           '''
         }
       }
@@ -56,7 +56,7 @@ pipeline {
         steps {
           sh '''#!/bin/bash
             source testenv/bin/activate
-            npx cypress run --spec cypress/integration/test.spec.js
+            /usr/bin/npx cypress run --spec cypress/integration/test.spec.js
             '''
         }
         post{
