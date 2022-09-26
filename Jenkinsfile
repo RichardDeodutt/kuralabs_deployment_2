@@ -52,7 +52,7 @@ pipeline {
           sh '/var/lib/jenkins/.local/bin/eb deploy url-shortener-dev'
         }
       }
-      stage ('Cypress End to End Testing') {
+      stage ('Cypress E2E') {
         steps {
           sh '''#!/bin/bash
             source testenv/bin/activate
