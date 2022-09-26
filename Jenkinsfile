@@ -31,8 +31,6 @@ pipeline {
         steps {
           sh '''#!/bin/bash
             source testenv/bin/activate
-            export FLASK_APP=application
-            flask run &
             cypress run --spec test.spec.js
             '''
         }
