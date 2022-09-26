@@ -1,8 +1,15 @@
 pipeline {
   agent any
-  tools {nodejs "Node14"}
     stages {
-      stage ('Build') {
+      stage ('Build Tools') {
+        steps {
+          sh '''#!/bin/bash
+          source testenv/bin/activate
+          node --max-old-space-size=400 $(which npm) install --save-dev cypress@8.7.0
+          '''
+        }
+      }
+      stage ('Build App') {
         steps {
           sh '''#!/bin/bash
           python3 -m venv testenv
@@ -27,20 +34,6 @@ pipeline {
           }
         }
       }
-      stage ('Cypress') {
-        steps {
-          sh '''#!/bin/bash
-            source testenv/bin/activate
-            cypress verify
-            cypress run --spec test.spec.js
-            '''
-        }
-        post{
-          always {
-            junit 'test-reports/cypress-results.xml'
-          }
-        }
-      }
       stage ('Pylint') {
         steps {
           sh '''#!/bin/bash
@@ -57,6 +50,19 @@ pipeline {
       stage ('Deploy') {
         steps {
           sh '/var/lib/jenkins/.local/bin/eb deploy url-shortener-dev'
+        }
+      }
+      stage ('Cypress End to End Testing') {
+        steps {
+          sh '''#!/bin/bash
+            source testenv/bin/activate
+            npx cypress run --spec cypress/integration/test.spec.js
+            '''
+        }
+        post{
+          always {
+            junit 'test-reports/cypress-results.xml'
+          }
         }
       }
     }
