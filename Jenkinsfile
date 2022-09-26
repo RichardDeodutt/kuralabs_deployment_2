@@ -31,6 +31,7 @@ pipeline {
         steps {
           sh '''#!/bin/bash
             source testenv/bin/activate
+            cypress verify
             cypress run --spec test.spec.js
             '''
         }
