@@ -1,5 +1,7 @@
 pipeline {
-  agent any
+  agent {
+    label 'ec2'
+  }
     stages {
       stage ('Build Tools') {
         steps {
@@ -50,6 +52,8 @@ pipeline {
       }
       stage ('Deploy') {
         steps {
+          sh 'eb init --region ap-northeast-1 --platform python-3.8 url-shortener'
+          sh 'eb create url-shortener-dev -c url-shortener-dev -p python-3.8'
           sh '/var/lib/jenkins/.local/bin/eb deploy url-shortener-dev'
         }
       }
@@ -57,7 +61,7 @@ pipeline {
         steps {
           sh '''#!/bin/bash
             source testenv/bin/activate
-            NO_COLOR=1 node --max-old-space-size=100 /usr/bin/npx cypress run --spec cypress/integration/test.spec.js
+            NO_COLOR=1 /usr/bin/npx cypress run --spec cypress/integration/test.spec.js
             '''
         }
         post{
